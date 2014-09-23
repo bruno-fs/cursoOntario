@@ -1,22 +1,26 @@
 #!/bin/bash
-
-### setting up the directory
-
-RNA_HOME=$HOME/cursoOntario/RNA/rna-seq_tutorial
-RNA_DATA_DIR=$RNA_HOME/data
-TRANS_IDX_DIR=$RNA_HOME/alignments/tophat/trans_idx
-
-mkdir -p $TRANS_IDX_DIR
-
-# ### get the data
-# ### index the reference genome
 # 
-# bowtie2-build $RNA_HOME/refs/hg19/bwt/9/9/9.fa
+# this bash script will only run tophat.
+# check rna-seq.py to see the whole pipeline.
 # 
+# 
+# ### setting up the directory
+# 
+# RNA_HOME=$HOME/cursoOntario/RNA/rna-seq_tutorial
+# RNA_DATA_DIR=$RNA_HOME/data
+# TRANS_IDX_DIR=$RNA_HOME/alignments/tophat/trans_idx
+# 
+# mkdir -p $TRANS_IDX_DIR
+# 
+# # ### get the data
+# # ### index the reference genome
+# # 
+# # bowtie2-build $RNA_HOME/refs/hg19/bwt/9/9/9.fa
+# # 
 # ## ==================== ##
 # ## ==== run tophat2 === ##
 # ## ==================== ##
-#
+# 
 # cd $RNA_HOME/alignments/tophat 
 # 
 # tophat2 -p 8 --mate-inner-dist 80 --mate-std-dev 38 \
@@ -63,9 +67,9 @@ mkdir -p $TRANS_IDX_DIR
 # ## ==================== ##
 # ## ==== cufflinks ===== ##
 # ## ==================== ##
-#
-
-mkdir $RNA_HOME/expression
-cd $RNA_HOME/expression
-
-
+# 
+# 
+# mkdir $RNA_HOME/expression
+# cd $RNA_HOME/expression
+# 
+# ## I decided to continue the pipeline on python
