@@ -81,7 +81,7 @@ samtools rmdup ERR001268_sort.bam ERR001268_sort_rmdup.bam
 cd $workDir/analysis/snv
 
 samtools mpileup -uf $workDir/reference/chr22.fa \
-     $workDir/analysis/bwa/0.6.1/ERR001268_sort_rmdup.bam | \
+     $workDir/analysis/bwa/0.6.2/ERR001268_sort_rmdup.bam | \
      bcftools view -bvcg - > var.raw.bcf
  
  ## without the -v flag, the bcf will contain information about all bases 

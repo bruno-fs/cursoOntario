@@ -39,22 +39,23 @@ os.chdir(th_dir)
 samples = { 'normal'    : ['_N02', '_N03', '_N06'],
             'carcinoma' : ['_C02', '_C03', '_C06'] }
 
-
 for group in samples:
     for sample in samples[group]:
+        tophat = "tophat2 -p 8" +\
+            " --mate-inner-dist 80" +\
+            " --mate-std-dev 38" +\
+            " --segment-length 18" +\
+            " --rg-id={0} --rg-sample={0}{1}" +\
+            " -o {0}{1} -G {2}" +\
+            " --transcriptome-index {3} " +\
+            "{4}/{0}{1}_read1.fasta {4}/{0}{1}_read2.fasta"
 
-        tophat = "tophat2 -p 8 --mate-inner-dist 80" \
-		" --mate-std-dev 38 --segment-length 18" \
-		" --rg-id=" + group + \
-                " --rg-sample=" + group + sample + \
-                " -o " + group + sample + " -G " + ref_gtf + \
-                " --transcriptome-index " + ensg_genes + \
-                " " + bowtie_index + " " + \
-                RNA_DATA_DIR + "/" + group + sample + "_read1.fasta " + \
-                RNA_DATA_DIR + "/" + group + sample + "_read2.fasta"
+        tophat = tophat.format(group, sample, ref_gtf, ensg_genes, RNA_DATA_DIR)
 
         # os.system(tophat)
         print(tophat)
+
+
 
 ## ==================== ##
 ## ==== cufflinks ===== ##
@@ -106,12 +107,17 @@ os.system("mkdir -p " + de_dir)
 
 os.chdir(th_dir)
 
-cuffdiff = "cuffdiff -p 8 -L Normal,Carcinoma -o " + de_dir + \
-    " --no-update-check " +  exp_dir + "/merged/merged.gtf "
+cuffdiff = "cuffdiff -p 8 -L {} -o {} --no-update-check {}/merged/merged.gtf"
+
+labels = ",".join([ group.capitalize() for group in samples ])
+
+cuffdiff = cuffdiff.format(labels, de_dir, exp_dir)
+
+accepted_hits  = ' {}/accepted_hits.bam'
 
 for group in samples:
     for sample in samples[group]:
-        cuffdiff = cuffdiff + ' ' + sample + '/accepted_hits.bam'
+        cuffdiff += accepted_hits.format(group + sample)
 
 # os.system(cuffdiff)
 print(cuffdiff)
