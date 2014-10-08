@@ -1,38 +1,40 @@
 #!/usr/bin/python2
 # fouad.yousif@oicr.on.ca fouad.makadsi@gmail.com
 #
-# edit the RNA_HOME path to match yours
+# edit the rna_home path to match yours
 # uncomment the os.system commands in order to run
 #
 #
-# ToDo: add arguments to control whether run the pipeline or
-# print the commands
+# ToDo: add arguments to control whether run the pipeline or print the commands
 
 
 import os
 
 ### setting up the directories
 
-RNA_HOME = '/home/bruno/cursoOntario/RNA/rna-seq_tutorial'
-RNA_DATA_DIR = RNA_HOME + "/data"
-TRANS_IDX_DIR = RNA_HOME + "/alignments/tophat/trans_idx"
+rna_home = '/home/bruno/cursoOntario/RNA/rna-seq_tutorial'
+rna_data_dir = rna_home + "/data"
+trans_idx_dir = rna_home + "/alignments/tophat/trans_idx"
 
-os.system('mkdir -p '+ TRANS_IDX_DIR)
+os.system('mkdir -p '+ trans_idx_dir)
 
-# ### get the data
-# ### index the reference genome
-#
-# # bowtie2-build $RNA_HOME/refs/hg19/bwt/9/9/9.fa
+### get the data
+### index the reference genome
+
+# os.system(bowtie2-build rna_home/refs/hg19/bwt/9/9/9.fa 9)
 
 ## ==================== ##
 ## ====== tophat2 ===== ##
 ## ==================== ##
 
 
-th_dir = RNA_HOME + "/alignments/tophat"
-ref_gtf = RNA_HOME + "/refs/hg19/genes/genes_chr9.gtf"
-ensg_genes   = TRANS_IDX_DIR + "/ENSG_Genes"
-bowtie_index = RNA_HOME + "/refs/hg19/bwt/9/9"
+th_dir = rna_home + "/alignments/tophat"
+bwt_dir = rna_home + "/refs/hg19/bwt/9"
+
+ref_gtf = rna_home + "/refs/hg19/genes/genes_chr9.gtf"
+ensg_genes   = trans_idx_dir + "/ENSG_Genes"
+bwt_idx = bwt_dir + "/9"
+genome_fasta = rna_home + "/refs/hg19/fasta/9/9.fa"
 
 os.chdir(th_dir)
 
@@ -47,62 +49,59 @@ for group in samples:
             " --segment-length 18" +\
             " --rg-id={0} --rg-sample={0}{1}" +\
             " -o {0}{1} -G {2}" +\
-            " --transcriptome-index {3} " +\
-            "{4}/{0}{1}_read1.fasta {4}/{0}{1}_read2.fasta"
+            " --transcriptome-index {3} {5}" +\
+            " {4}/{0}{1}_read1.fasta {4}/{0}{1}_read2.fasta"
 
-        tophat = tophat.format(group, sample, ref_gtf, ensg_genes, RNA_DATA_DIR)
+        tophat = tophat.format(group, sample, ref_gtf, ensg_genes, rna_data_dir, bwt_idx)
+        # format index           0      1        2         3            4           5
 
-        # os.system(tophat)
-        print(tophat)
-
-
+        print("[running] " + tophat)
+        os.system(tophat)
 
 ## ==================== ##
 ## ==== cufflinks ===== ##
 ## ==================== ##
 
 
-exp_dir = RNA_HOME + "/expression"
+exp_dir = rna_home + "/expression"
 os.system('mkdir -p ' + exp_dir)
 os.chdir(exp_dir)
 
 for group in samples:
     for sample in samples[group]:
 
-        cufflinks = "cufflinks -p 8 -o " + \
-            group + sample + " --GTF " + \
-            ref_gtf + " --no-update-check " + \
-            th_dir + "/" + group + sample + "/accepted_hits.bam"
+        cufflinks = "cufflinks -p 8" +\
+            " -o {0} --GTF {1}" +\
+            " --no-update-check" +\
+            " {2}/{0}/accepted_hits.bam"
 
-        # os.system(cufflinks)
-        print(cufflinks)
+        cufflinks = cufflinks.format(group + sample, ref_gtf, th_dir)
+        ## format index                    0            1       2
 
-
-
-
+        print("[running] " + cufflinks)
+        os.system(cufflinks)
 
 ## ==================== ##
 ## ==== cuffmerge ===== ##
 ## ==================== ##
 
 
-os.system("ls -l " + exp_dir + "/*/transcripts.gtf | cut -f9 -d' ' > " + exp_dir + "/assembly_GTF_list.txt")
+os.system("find . -name transcripts.gtf > assembly_GTF_list.txt")
 
-cuffmerge = "cuffmerge -p 8 -o " + exp_dir + \
-    "/merged -g " + RNA_HOME + \
-    "/refs/hg19/genes/genes_chr9.gtf -s " \
-    + RNA_HOME + "/refs/hg19/bwt/9/ " \
-    + exp_dir + "/assembly_GTF_list.txt"
+cuffmerge = "cuffmerge -p 8 -o merged -g {} -s {} assembly_GTF_list.txt"
 
-# os.system(cuffmerge)
-print(cuffmerge)
+cuffmerge = cuffmerge.format(ref_gtf, genome_fasta)
+
+
+print("[running] " + cuffmerge)
+os.system(cuffmerge)
 
 ## ==================== ##
 ## ===== cuffdiff ===== ##
 ## ==================== ##
 
 
-de_dir = RNA_HOME + "/de/reference_only"
+de_dir = rna_home + "/de/reference_only"
 os.system("mkdir -p " + de_dir)
 
 os.chdir(th_dir)
@@ -113,12 +112,9 @@ labels = ",".join([ group.capitalize() for group in samples ])
 
 cuffdiff = cuffdiff.format(labels, de_dir, exp_dir)
 
-accepted_hits  = ' {}/accepted_hits.bam'
-
 for group in samples:
-    for sample in samples[group]:
-        cuffdiff += accepted_hits.format(group + sample)
+    cuffdiff += " " + ",".join([ '{}/accepted_hits.bam'.format(group + sample) for sample in samples[group] ])
 
-# os.system(cuffdiff)
-print(cuffdiff)
+print("[running] " + cuffdiff)
+os.system(cuffdiff)
 
