@@ -4,14 +4,16 @@ The course was presented by Paul Boutros team (Ontario Institute of Cancer Resea
 
 Classes were held at the Instituto de Química from Universidade de São Paulo (IQ-USP) in September 2014. 
 
-**Course Material**:
+Course Material
+---
 [cursoOntario](https://drive.google.com/folderview?id=0B5y8D63nEEgpMXpxTGpGeXRfS3M&usp=sharing)
 
 
-Credits:
+Credits
+---
 - RNA-seq class:
     - Fouad Yousif
-    - bioinformatics.ca
+    - [bioinformatics.ca](http://bioinformatics.ca/)
 - DNA-seq and other classes:
     - Paul Boutros
     - Fouad Yousif
