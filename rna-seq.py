@@ -1,18 +1,22 @@
-#!/usr/bin/python2
-# fouad.yousif@oicr.on.ca fouad.makadsi@gmail.com
+#!/usr/bin/env python2
 #
-# edit the rna_home path to match yours
-# uncomment the os.system commands in order to run
-#
+# Dependencies: bowtie2, tophat2, cufflinks2 and rna-seq_tutorial folder (check the README for links)
+# Feel free to clone and edit this script to match your needs ;)
 #
 # ToDo: add arguments to control whether run the pipeline or print the commands
+
+__author__ = "Bruno Souza"
+__credits__ = ["Fouad Yousif", "bioinformatics.ca"]
+__maintainer__ = "Bruno Souza"
+__email__ = "fsouza dot bruno at usp dot br"
 
 
 import os
 
 ### setting up the directories
+### EDIT rna_home to match the path/to/your rna-seq_tutorial folder
 
-rna_home = '/home/bruno/cursoOntario/RNA/rna-seq_tutorial'
+rna_home = '/home/bruno/cursoOntario/RNA/rna-seq_tutorial' # <--- EDIT THIS PATH
 rna_data_dir = rna_home + "/data"
 trans_idx_dir = rna_home + "/alignments/tophat/trans_idx"
 

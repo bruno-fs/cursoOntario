@@ -1,5 +1,21 @@
-Scripts based on dna and rna-seq classes from "Introduction to Bioinformatics"
-presented by Paul Boutros, Fouad Yousif and Julie Livingstone - Ontario Institute of Cancer Research (OICR, U. Toronto)
+Scripts I've made based on DNA-seq and RNA-seq classes from "Introduction to Bioinformatics". 
 
-September 2014
-Instituto de Química - Universidade de São Paulo
+The course was presented by Paul Boutros team (Ontario Institute of Cancer Research - OICR, U. Toronto)
+
+Classes were held at the Instituto de Química from Universidade de São Paulo (IQ-USP) in September 2014. 
+
+course material:
+[cursoOntario](https://drive.google.com/folderview?id=0B5y8D63nEEgpMXpxTGpGeXRfS3M&usp=sharing)
+
+
+Credits:
+- RNA-seq class:
+    - Fouad Yousif
+    - bioinformatics.ca
+- DNA-seq and other classes:
+    - Paul Boutros
+    - Fouad Yousif
+    - Julie Livingstone
+    - Michelle Chan-Seng-Yue
+    - Nicholas Harding
+
