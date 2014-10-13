@@ -4,7 +4,7 @@ The course was presented by Paul Boutros team (Ontario Institute of Cancer Resea
 
 Classes were held at the Instituto de Química from Universidade de São Paulo (IQ-USP) in September 2014. 
 
-course material:
+**Course Material**:
 [cursoOntario](https://drive.google.com/folderview?id=0B5y8D63nEEgpMXpxTGpGeXRfS3M&usp=sharing)
 
 
