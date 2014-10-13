@@ -1,7 +1,9 @@
 #!/bin/bash
 #
 # script based on DNA-seq classes from "Introduction to Bioinformatics", 
-# presented by Paul Boultros, Fouad and Julie 
+# 
+# Credits: Paul Boultros, Fouad Yousif, Julie Livingstone, Michelle Chan-Seng-Yue and Nicholas Harding
+# 
 #
 # this script assumes your NGS_lab folder has the following structure:
 # 
