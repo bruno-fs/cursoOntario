@@ -11,8 +11,24 @@ __maintainer__ = "Bruno Souza"
 __email__ = "fsouza dot bruno at usp dot br"
 
 
-import os
+from subprocess import call
 from collections import OrderedDict
+import sys
+import os
+
+def run(command):
+    """run a command in bash. for non-zero status, print an error and exit"""
+    print >>sys.stderr, "[running]", command
+    try:
+        status = call(command, shell=True)
+        if status != 0:
+            print >>sys.stderr, "Child was terminated by signal", status
+            sys.exit("[error] {}".format(command))
+        else:
+            print >>sys.stderr, "[DONE] {}".format(command)
+    except OSError as e:
+        print >>sys.stderr, "Execution failed:", e
+        sys.exit("[FAIL] {}".format(command))
 
 ### setting up the directories
 ### EDIT rna_home to match the path/to/your rna-seq_tutorial folder
@@ -21,12 +37,13 @@ rna_home = '/home/bruno/cursoOntario/RNA/rna-seq_tutorial' # <--- EDIT THIS PATH
 rna_data_dir = rna_home + "/data"
 trans_idx_dir = rna_home + "/alignments/tophat/trans_idx"
 
-os.system('mkdir -p '+ trans_idx_dir)
+run('mkdir -p ' + trans_idx_dir)
+
 
 ### get the data
 ### index the reference genome
 
-# os.system(bowtie2-build rna_home/refs/hg19/bwt/9/9/9.fa 9)
+# run(bowtie2-build rna_home/refs/hg19/bwt/9/9/9.fa 9)
 
 
 
@@ -74,14 +91,15 @@ for group in samples:
                 " --rg-id={0} --rg-sample={1}" +
                 " -o {1} -G {2}" +
                 " --transcriptome-index {3} {4}" +
-                " {5} {6}" )
+                " {5} {6}")
 
      
         tophat = tophat.format(group, sample, ref_gtf, ensg_genes, bwt_idx, reads1, reads2)
         # format index           0      1        2         3          4        5      6
 
-        print("[running] " + tophat)
-        os.system(tophat)
+        #print("[running] " + tophat)
+        #run(tophat)
+        run(tophat)
 
 ## ==================== ##
 ## ==== cufflinks ===== ##
@@ -89,7 +107,7 @@ for group in samples:
 
 
 exp_dir = rna_home + "/expression"
-os.system('mkdir -p ' + exp_dir)
+run('mkdir -p ' + exp_dir)
 os.chdir(exp_dir)
 
 for group in samples:
@@ -103,23 +121,23 @@ for group in samples:
         cufflinks = cufflinks.format(sample, ref_gtf, th_dir)
         ## format index                0        1       2
 
-        print("[running] " + cufflinks)
-        os.system(cufflinks)
+#        print("[running] " + cufflinks)
+        run(cufflinks)
 
 ## ==================== ##
 ## ==== cuffmerge ===== ##
 ## ==================== ##
 
 
-os.system("find . -name transcripts.gtf > assembly_GTF_list.txt")
+run("find . -name transcripts.gtf > assembly_GTF_list.txt")
 
 cuffmerge = "cuffmerge -p 8 -o merged -g {} -s {} assembly_GTF_list.txt"
 
 cuffmerge = cuffmerge.format(ref_gtf, genome_fasta)
 
 
-print("[running] " + cuffmerge)
-os.system(cuffmerge)
+#print("[running] " + cuffmerge)
+run(cuffmerge)
 
 ## ==================== ##
 ## ===== cuffdiff ===== ##
@@ -127,7 +145,7 @@ os.system(cuffmerge)
 
 
 de_dir = rna_home + "/de/reference_only"
-os.system("mkdir -p " + de_dir)
+run("mkdir -p " + de_dir)
 
 os.chdir(th_dir)
 
@@ -140,7 +158,7 @@ cuffdiff = cuffdiff.format(labels, de_dir, exp_dir)
 for group in samples:
     cuffdiff += " " + ",".join([ '{}/accepted_hits.bam'.format(sample) for sample in samples[group] ])
 
-print("[running] " + cuffdiff)
-os.system(cuffdiff)
+#print("[running] " + cuffdiff)
+run(cuffdiff)
 
 
